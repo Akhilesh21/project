@@ -22,11 +22,17 @@ $router->get("test","ApiController@test");
 //$router->post("register","UserController@register");
 $router->post('/register','UserController@register');
 $router->post('/login','UserController@login');
+$router->post('/updateDetails','UserController@updateDetails');
+$router->post('/updateProfile','UserController@updateProfile');
+
 // $router->get('/user/{id}', 'UserController@show');
 $router->get('/details', 'UserController@details');
 
 
-$router->post('tweet','TweetController@createTweet');
+$router->post('createTweet','TweetController@createTweet');
 $router->post('editTweet','TweetController@editTweet');
 $router->get('getTweet','TweetController@getTweet');
-$router->post('delete','TweetController@deleteTweet');
+$router->post('deleteTweet','TweetController@deleteTweet');
+
+$router->post('Comment','TweetController@Comment');
+

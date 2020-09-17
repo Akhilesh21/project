@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Model\Tweet;
+use App\Model\Comment;
+
 use Illuminate\Http\Request;
 
 class TweetController extends Controller{
@@ -11,8 +13,7 @@ class TweetController extends Controller{
         if($input['tweet'] == null){
             return response()->json(['Message' =>'error'], 400);
         }else{
-           $input['userid']= 1;
-            $notes = Tweet::create($input);
+            $tweet = Tweet::create($input);
             return response()->json(['Message' => 'Tweet created successfully'], 200);
         }
     }
@@ -51,6 +52,21 @@ class TweetController extends Controller{
               return response()->json(['message' => 'error'] , 404);
           }
     }
+
+    public function Comment(Request $request){
+        $input = $request->all();
+        echo "test";
+        if($input['comment'] == null){
+            return response()->json(['Message' =>'error'], 400);
+        }else{
+            $comment = Comment::create($input);
+            return response()->json(['Message' => 'commented successfully'], 200);
+        }
+    }
+
+
+
+    
   
 }
 ?>
