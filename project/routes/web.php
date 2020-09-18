@@ -37,5 +37,8 @@ $router->post('deleteTweet','TweetController@deleteTweet');
 $router->post('addComment','TweetController@addComment');
 $router->post('editComment','TweetController@editComment');
 $router->post('deleteComment','TweetController@deleteComment');
+$router->get('getComment','TweetController@getComment');
+
+$router->post('like','TweetController@like');
 
 

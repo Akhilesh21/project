@@ -53,12 +53,22 @@ class TweetController extends Controller{
           }
     }
 
-    public function like(Request $request){
-        $like = Tweet::find($reuest->id);
-        if($like){
-         // $like->total_likes = somelikes get from database +1;
-         // seelct likes 
-        }
+    public function like(Request $request, $count){
+        $like = Tweet::where($request->id)->first;
+        $like->userid()->attach(auth()->userid()->id);
+        $like->sum += $count;
+        $like->total_likes += 1;
+        $like->save();
+        return number_format((float)$like->sum / $total_likes, 1, '.', '');
+    }
+
+    public function unlike(Request $request, $count){
+        $like = Tweet::where($request->id)->first;
+        $like->userid()->attach(auth()->userid()->id);
+        $like->sum -= $count;
+        $like->total_likes -= 1;
+        $like->save();
+        return number_format((float)$like->sum / $total_likes, 1, '.', '');
     }
 
 
@@ -78,6 +88,17 @@ class TweetController extends Controller{
         ]);
         return response()->json(['Message' => 'comment created successfully'], 200);
     }
+
+    public function getComment(){
+        $find = comment::where('tweet_id', 1)->first();
+        if($find){
+            $comment = comment::where('tweet_id',1)->get(['id','comment',]);
+            return response()->json(['data' => $comment], 200);
+        }else{
+            return response()->json(['message' => 'error']);
+        }
+    }
+
 
     public function editComment(Request $request){
         $comment = comment::find($request->id);
