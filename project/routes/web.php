@@ -32,6 +32,7 @@ $router->get('/details', 'UserController@details');
 $router->post('createTweet','TweetController@createTweet');
 $router->post('editTweet','TweetController@editTweet');
 $router->get('getTweet','TweetController@getTweet');
+
 $router->post('deleteTweet','TweetController@deleteTweet');
 
 $router->post('addComment','TweetController@addComment');
@@ -40,7 +41,7 @@ $router->post('deleteComment','TweetController@deleteComment');
 $router->get('getComment','TweetController@getComment');
 
 $router->post('likeAndDislike','TweetController@likeAndDislike');
-$router->get('searchTweet','TweetController@searchTweet');
-
-
+$router->post('searchTweet','TweetController@searchTweet');
+$router->get('gettenTweet','TweetController@gettenTweet');
+$router->get('gettencomment','TweetController@gettencomment');
 
