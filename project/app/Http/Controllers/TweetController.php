@@ -7,7 +7,7 @@ use App\Model\Comment;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller{
-    
+//working    
     public function createTweet(Request $request){
         $input = $request->all();
         if($input['tweet'] == null){
@@ -17,7 +17,7 @@ class TweetController extends Controller{
             return response()->json(['Message' => 'Tweet created successfully'], 200);
         }
     }
-//edit or update tweet
+//edit or update tweet //working
     public function editTweet(Request $request){
         $tweet = Tweet::find($request->id);
         if($tweet){
@@ -32,7 +32,7 @@ class TweetController extends Controller{
             return response()->json(['message' => 'undefined'], 404);
         }
     }
- 
+ //working
     public function getTweet(){
         $find = Tweet::where('userid', 1)->first();
         if($find){
@@ -53,23 +53,23 @@ class TweetController extends Controller{
           }
     }
 
-    public function like(Request $request, $count){
-        $like = Tweet::where($request->id)->first;
-        $like->userid()->attach(auth()->userid()->id);
-        $like->sum += $count;
-        $like->total_likes += 1;
-        $like->save();
-        return number_format((float)$like->sum / $total_likes, 1, '.', '');
-    }
+    // public function like(Request $request){
+    //     $like = Tweet::where($request->id)->first;
+    //     $like->userid()->attach(auth()->userid()->id);
+    //     $like->sum += $count;
+    //     $like->total_likes += 1;
+    //     $like->save();
+    //     return number_format((float)$like->sum / $total_likes, 1, '.', '');
+    // }
 
-    public function unlike(Request $request, $count){
-        $like = Tweet::where($request->id)->first;
-        $like->userid()->attach(auth()->userid()->id);
-        $like->sum -= $count;
-        $like->total_likes -= 1;
-        $like->save();
-        return number_format((float)$like->sum / $total_likes, 1, '.', '');
-    }
+    // public function unlike(Request $request, $count){
+    //     $like = Tweet::where($request->id)->first;
+    //     $like->userid()->attach(auth()->userid()->id);
+    //     $like->sum -= $count;
+    //     $like->total_likes -= 1;
+    //     $like->save();
+    //     return number_format((float)$like->sum / $total_likes, 1, '.', '');
+    // }
 
 
     public function addComment(Request $request)
@@ -125,6 +125,50 @@ class TweetController extends Controller{
             return response()->json(['message' => 'error'] , 404);
         }
   }
-  
+
+  public function likeAndDislike(Request $request){
+     $inputValues = $request->all();
+     $find = Tweet::where(['userid' => $inputValues['userid'], 'id' => $inputValues['id']])->get(['id','total_likes','userid']);
+     if(isset($inputValues['like']))
+     {
+         $find->total_likes=$find['total_likes'] + 1;
+         $find->save();
+         return response()->json(['message' => 'liked successfully']);
+     }else{
+         if($find['total_likes']>0){
+            $find->total_likes=$find['total_likes'] - 1;
+            $find->save();
+            return response()->json(['message' => 'disliked succesful']);
+        }
+     }
+     return response()->json(['message' => 'something went wrong']);
+    }
+
+    public function searchTweet(Request $request){
+        $inputValues = $request->all();
+        $search = $request['search'];
+        if(isset($inputValues['search'])){
+        $find=Tweet::where(['userid'=>$inputValues['userid']])->where('tweet','LIKE',"%{$search}%")->get();
+        return response()->json(['data' => $find ], 200);
+        }
+    }
+
+    public function updateComment(Request $request)
+    {
+        $inputValues = $request->all();
+        if(isset($inputValues['comment']))
+        {
+            $find=Comment::where(['tweet_id'=> $inputValues['tweet_id']]);
+            if($find){
+                $find->commnet=$inputValues['comment'];
+                $find->save();
+                return response()->json(['message' => 'comment updated']);
+            }
+        }
+        return response()->json(['message' => 'something went wrong']);
+    }
+    
+    
 }
+  
 ?>
