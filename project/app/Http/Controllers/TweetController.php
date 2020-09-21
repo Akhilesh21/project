@@ -157,7 +157,8 @@ class TweetController extends Controller{
 //not working
   public function likeAndDislike(Request $request){
      $inputValues = $request->all();
-     $find = Tweet::find($inputValues['id']);
+     $find = Tweet::find($inputValues->id)->first;
+    // $find = Tweet::find($inputValues['id']);
      if($find)
      {
         $find->total_likes=$find['total_likes'] + 1;
@@ -167,7 +168,7 @@ class TweetController extends Controller{
      return response()->json(['message' => 'something went wrong']);
     }
 //search tweet by text
-//not working 
+// working 
     public function searchTweet(Request $request){
         $inputValues = $request->all();
         $search = $request['search'];
