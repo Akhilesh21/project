@@ -92,7 +92,7 @@ class TweetController extends Controller{
             'tweet_id' => 'required|integer', //  |unique:users',
         ]);
 
-        // $find=Tweet::where(['tweet_id'=> $inputValues['tweet_id'],'twitter_handler'=> $inputValues['twitter_handler']])->get(['id','total_comments']);
+        // $find=Tweet::where(['userid'=> $inputValues['userid'],'total_comments'=> $inputValues['total_comments']])->get(['id','total_comments']);
         // $find->total_comments=$find['total_comments']+1;
         // $find->save();
 
@@ -126,12 +126,10 @@ class TweetController extends Controller{
         }
     }
     
-//
+//working
     public function editComment(Request $request){
        $comment = comment::find($request->tweet_id);
-    //     echo "hi";
-    //    exit;
-    print_r($comment);
+    // print_r($comment);
         if($comment){
             if($request['comment'] == null){
                 return response()->json(['Message' => 'error'], 400);
@@ -157,8 +155,7 @@ class TweetController extends Controller{
 //not working
   public function likeAndDislike(Request $request){
      $inputValues = $request->all();
-     $find = Tweet::find($inputValues->id)->first;
-    // $find = Tweet::find($inputValues['id']);
+     $find = Tweet::find($inputValues['id']);
      if($find)
      {
         $find->total_likes=$find['total_likes'] + 1;
@@ -189,27 +186,13 @@ class TweetController extends Controller{
         $search = $request['search'];
         if(isset($inputValues['search']))
         {
-            $find=Comment::where(['twitter_handler'=>$inputValues['userid']])->where(['tweet_id'=>$inputValues['tweet_id']])->where('comment','LIKE',"%{$search}%")->get();
+            $find=Comment::where(['twitter_handler'=>$inputValues['tweet_id']])->where(['tweet_id'=>$inputValues['tweet_id']])->where('comment','LIKE',"%{$search}%")->get();
             return response()->json(['data' => $find], 200);
         }
-    }
-//not working
-    public function updateComment(Request $request)
-    {
-        $inputValues = $request->all();
-        if(isset($inputValues['comment']))
-        {
-            $find=Comment::where(['tweet_id'=> $inputValues['tweet_id']]);
-            if($find){
-                $find->comment=$inputValues['comment'];
-                $find->save();
-                return response()->json(['message' => 'comment updated']);
-            }
-        }
-        return response()->json(['message' => 'something went wrong']);
+       return response()->json(['data' =>'not found' ], 200);
     }
     
-//working
+//pagination  10 tweets per pageworking
     public function gettenTweet(Request $request){
         $inputValues=$request->all();
         $find = Tweet::where('userid', $inputValues['userid'])->first();
@@ -220,7 +203,7 @@ class TweetController extends Controller{
             return response()->json(['message' => 'error']);
         }
     }
-//working
+//pagination 10 comments per page working
     public function gettencomment(Request $request){
         $inputValues=$request->all();
         $find = comment::where('tweet_id', $inputValues['tweet_id'])->first();
