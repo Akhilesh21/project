@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('tweeter_handle');
+            $table->string('profile_pic')->nullable();
             $table->string('password');
             $table->timestamps();
         });

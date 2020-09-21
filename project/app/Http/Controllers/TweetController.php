@@ -197,7 +197,7 @@ class TweetController extends Controller{
         $inputValues=$request->all();
         $find = Tweet::where('userid', $inputValues['userid'])->first();
         if($find){
-            $tweet = Tweet::where('userid',$inputValues['userid'])->limit(10)->get();
+            $tweet = Tweet::where('userid',$inputValues['userid'])->paginate(10);//->get();
             return response()->json(['data' => $tweet], 200);
         }else{
             return response()->json(['message' => 'error']);
@@ -208,7 +208,7 @@ class TweetController extends Controller{
         $inputValues=$request->all();
         $find = comment::where('tweet_id', $inputValues['tweet_id'])->first();
         if($find){
-            $comment = comment::where('tweet_id',$inputValues['tweet_id'])->limit(10)->get();
+            $comment = comment::where('tweet_id',$inputValues['tweet_id'])->paginate(10);//->get();
             return response()->json(['data' => $comment], 200);
         }else{
             return response()->json(['message' => 'error']);

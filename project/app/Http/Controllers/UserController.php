@@ -17,6 +17,7 @@ class UserController extends Controller
        
 
     }
+    //working
     public function register(Request $request){
 //data validation
         $name = $request->input('name');
@@ -50,7 +51,7 @@ class UserController extends Controller
 
     }
 
-
+//working
     public function login(Request $request){
         $email = $request->input('email');
         $password = $request->input('password');
@@ -82,7 +83,7 @@ class UserController extends Controller
     public function details(){
             return response()->json(['user' => auth()->user()], 200);
     }  
-
+//working
     public function updateDetails(Request $request){
         // echo "akilesh";exit;
         $update = User::find($request->id);
@@ -101,9 +102,9 @@ class UserController extends Controller
             return response()->json(['message' => 'undefined'], 404);
         }
     }
-    
+    //working
     public function updateProfile(Request $request){
-      $find = User::find($request['token']);
+      $find = User::find($request['api_token']);
       if($find){
         $find->profile_pic=$request['profile_pic'];
         $find->save();
