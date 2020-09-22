@@ -197,7 +197,7 @@ class TweetController extends Controller{
         $inputValues=$request->all();
         $find = Tweet::where('userid', $inputValues['userid'])->first();
         if($find){
-            $tweet = Tweet::where('userid',$inputValues['userid'])->paginate(10);//->get();
+            $tweet = Tweet::where('userid',$inputValues['userid'])->paginate(10)->onEachSide(5);//->get();
             return response()->json(['data' => $tweet], 200);
         }else{
             return response()->json(['message' => 'error']);

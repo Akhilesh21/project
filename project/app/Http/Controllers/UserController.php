@@ -112,5 +112,7 @@ class UserController extends Controller
       }else
       return response()->json(['message'=>"profile not updated"]);
     }
+
+    
        
 }
