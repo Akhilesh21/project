@@ -26,7 +26,7 @@ $router->post('/updateDetails','UserController@updateDetails');
 $router->post('/updateProfile','UserController@updateProfile');
 
 // $router->get('/user/{id}', 'UserController@show');
-$router->get('/details', 'UserController@details');
+$router->get('/details/{id}', 'UserController@details');
 
 
 $router->post('createTweet','TweetController@createTweet');
@@ -40,10 +40,15 @@ $router->post('editComment','TweetController@editComment');
 $router->post('deleteComment','TweetController@deleteComment');
 $router->get('getComment','TweetController@getComment');
 
-$router->post('likeAndDislike','TweetController@likeAndDislike');
+$router->post('like','TweetController@like');
+$router->post('Dislike','TweetController@Dislike');
+
 $router->post('searchTweet','TweetController@searchTweet');
 $router->post('searchComment','TweetController@searchComment');
 
 $router->get('gettenTweet','TweetController@gettenTweet');
 $router->get('gettencomment','TweetController@gettencomment');
 
+$router->get('file/profile', 'TweetController@profile');
+
+$router->post('file/update_profile', 'TweetController@update_profile');

@@ -80,8 +80,8 @@ class UserController extends Controller
         }
     }
 
-    public function details(){
-            return response()->json(['user' => auth()->user()], 200);
+    public function details(User $user){
+            return $user;
     }  
 //working
     public function updateDetails(Request $request){
@@ -113,6 +113,15 @@ class UserController extends Controller
       return response()->json(['message'=>"profile not updated"]);
     }
 
+   public function profile(){
+       echo "hi";
+       return response()->download(public_path('twitter_PNG31.png'), 'profile_pic');
+   }
     
-       
+   public function Update_profile(Request $request){
+   $fileName = "user_image.jpg";
+   $path = $request->file('profile_pic')->move(public_path("/") ,$fileName);
+   $photoUrl = url('/'.$fileName);
+   return response()->json(['url' => $photoUrl], 200);
+}
 }
