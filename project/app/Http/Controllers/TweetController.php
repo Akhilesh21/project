@@ -32,16 +32,7 @@ class TweetController extends Controller{
             return response()->json(['message' => 'undefined'], 404);
         }
     }
- //working
-    // public function getTweet(){
-    //     $find = Tweet::where('userid', 1)->first();
-    //     if($find){
-    //         $tweet = Tweet::where('userid',1)->get(['id','tweet',]);
-    //         return response()->json(['data' => $tweet], 200);
-    //     }else{
-    //         return response()->json(['message' => 'error']);
-    //     }
-    // }
+ 
 //working
     public function getTweet(Request $request){
         $inputValues=$request->all();
@@ -64,25 +55,8 @@ class TweetController extends Controller{
           }
     }
 
-    // public function like(Request $request){
-    //     $like = Tweet::where($request->id)->first;
-    //     $like->userid()->attach(auth()->userid()->id);
-    //     $like->sum += $count;
-    //     $like->total_likes += 1;
-    //     $like->save();
-    //     return number_format((float)$like->sum / $total_likes, 1, '.', '');
-    // }
-
-    // public function unlike(Request $request, $count){
-    //     $like = Tweet::where($request->id)->first;
-    //     $like->userid()->attach(auth()->userid()->id);
-    //     $like->sum -= $count;
-    //     $like->total_likes -= 1;
-    //     $like->save();
-    //     return number_format((float)$like->sum / $total_likes, 1, '.', '');
-    // }
-
 //working
+// here table tweets(id) = table  comments(tweet_id)
     public function addComment(Request $request)
     {
 
@@ -91,12 +65,6 @@ class TweetController extends Controller{
             'twitter_handler' => 'required|min:3',
             'tweet_id' => 'required|integer', //  |unique:users',
         ]);
-
-        // $find=Tweet::where(['userid'=> $inputValues['userid'],'total_comments'=> $inputValues['total_comments']])->get(['id','total_comments']);
-        // $find->total_comments=$find['total_comments']+1;
-        // $find->save();
-       
-
         $user = comment::create([
             'comment' => $request->comment,
             'twitter_handler' => $request->twitter_handler,
@@ -115,21 +83,8 @@ class TweetController extends Controller{
         } else {
             return response()->json(['message' => ' Id Invalid'], 404);
         }
-        
-        //return response()->json(['Message' => 'comment created successfully'], 200);
     }
     
-    //working
-    // public function getComment(){
-    //     $find = comment::where('tweet_id', 1)->first();
-    //     if($find){
-    //         $comment = comment::where('tweet_id',1)->get(['id','comment',]);
-    //         return response()->json(['data' => $comment], 200);
-    //     }else{
-    //         return response()->json(['message' => 'error']);
-    //     }
-    // }
-    ///working
     public function getComment(Request $request){
         $inputValues=$request->all();
         $find = comment::where('tweet_id', $inputValues['tweet_id'])->first();
@@ -162,10 +117,18 @@ class TweetController extends Controller{
         $find = comment::find($request['id']);
         if($find){
             $find = comment::find($request['id'])->delete();
-            return response()->json(['message' => 'tweet deleted '], 200);
-        }else{
-            return response()->json(['message' => 'error'] , 404);
+         $comment = Tweet::find($request->id);
+        if ($comment) {
+           $comment->total_comments = $comment['total_comments'] - '1';
+            if ($comment->save()) {
+                return response()->json(['message' => 'comment deleted  successfully'], 200);
+            } else {
+                return response()->json(['message' => 'Erorr '], 400);
+            }
+        } else {
+            return response()->json(['message' => ' Id Invalid'], 404);
         }
+    }
   }
 
   //working  
@@ -188,7 +151,6 @@ class TweetController extends Controller{
         $like = Tweet::find($request->id);
         if ($like) {
            $like->total_likes = $like['total_likes'] - '1';
-           // $like->total_likes=$request->total_likes + '1';
             if ($like->save()) {
                 return response()->json(['message' => 'unlike successfully'], 200);
             } else {
@@ -197,17 +159,33 @@ class TweetController extends Controller{
         } else {
             return response()->json(['message' => ' Id Invalid'], 404);
         }
-
+    }
+      public function getLikes(){
+        
     }
 
     public function retweet(Request $request){
         $retweet = Tweet::find($request->id);
         if ($retweet) {
-           $retweet->total_retweets = $like['total_retweets'] + '1';
+           $retweet->total_retweets = $retweet['total_retweets'] + '1';
             if ($retweet->save()) {
                 return response()->json(['message' => 'retweet successfully'], 200);
             } else {
-                return response()->json(['message' => 'Erorr while like'], 400);
+                return response()->json(['message' => 'Erorr while retweet'], 400);
+            }
+        } else {
+            return response()->json(['message' => ' Id Invalid'], 404);
+        }
+    }
+
+    public function undoRetweet(Request $request){
+        $retweet = Tweet::find($request->id);
+        if ($retweet) {
+           $retweet->total_retweets = $retweet['total_retweets'] - '1';
+            if ($retweet->save()) {
+                return response()->json(['message' => 'undoRetweet successfully'], 200);
+            } else {
+                return response()->json(['message' => 'Erorr while undoRetweet'], 400);
             }
         } else {
             return response()->json(['message' => ' Id Invalid'], 404);

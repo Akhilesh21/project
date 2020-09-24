@@ -42,6 +42,9 @@ $router->get('getComment','TweetController@getComment');
 
 $router->post('like','TweetController@like');
 $router->post('Dislike','TweetController@Dislike');
+$router->post('retweet','TweetController@retweet');
+$router->post('undoRetweet','TweetController@undoRetweet');
+
 
 $router->post('searchTweet','TweetController@searchTweet');
 $router->post('searchComment','TweetController@searchComment');
