@@ -102,7 +102,7 @@ class UserController extends Controller
             return response()->json(['message' => 'undefined'], 404);
         }
     }
-    // 4. working
+    // 4. pending
     public function updateProfile(Request $request){
       $find = User::find($request['api_token']);
       if($find){
