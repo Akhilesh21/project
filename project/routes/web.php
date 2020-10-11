@@ -22,6 +22,8 @@ $router->get("test","ApiController@test");
 //$router->post("register","UserController@register");
 $router->post('/register','UserController@register');
 $router->post('/login','UserController@login');
+$router->get('users', 'UserController@allUsers');
+
 $router->post('/updateDetails','UserController@updateDetails');
 $router->post('/updateProfile','UserController@updateProfile');
 
@@ -55,3 +57,11 @@ $router->get('gettencomment','TweetController@gettencomment');
 $router->get('file/profile', 'TweetController@profile');
 
 $router->post('file/update_profile', 'TweetController@update_profile');
+
+
+
+
+// $router->group(['prefix' => 'api'], function () use ($router) {
+//     // Matches "/api/register
+//     $router->post('register', 'UserController@register');
+// });
