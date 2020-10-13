@@ -8,30 +8,79 @@ use Illuminate\Http\Request;
 
 class TweetController extends Controller{
 //1.working    
+    // public function createTweet(Request $request){
+    //     $input = $request->all();
+    //     if($input['tweet'] == null){
+    //         return response()->json(['Message' =>'error'], 400);
+    //     }else{
+    //         $tweet = Tweet::create($input);
+    //         return response()->json(['Message' => 'Tweet created successfully'], 200);
+    //     }
+    // }
+//working with validation
     public function createTweet(Request $request){
-        $input = $request->all();
-        if($input['tweet'] == null){
-            return response()->json(['Message' =>'error'], 400);
-        }else{
-            $tweet = Tweet::create($input);
-            return response()->json(['Message' => 'Tweet created successfully'], 200);
-        }
-    }
-//2 .edit or update tweet //working
-    public function editTweet(Request $request){
+             $this->validate($request, [
+                'tweet' => 'required',
+                'userid' => 'required|integer',
+                'total_comments' => 'required',
+                'total_likes' => 'required',  
+                'total_retweets' => 'required'    
+             ]);
+            $input = $request->only('tweet','userid','total_comments','total_likes','total_retweets'); 
+             try{
+                 $user = new Tweet;
+                 $user->tweet = $input['tweet'];
+                 $user->userid = $input['userid'];
+                 $user->total_comments = $input['total_comments'];
+                 $user->total_likes = $input['total_likes'];
+                 $user->total_retweets = $input['total_retweets'];
+                 
+                 if( $user->save() ){
+                     $code = 200;
+                    $output = ['user' => $user,'code' => $code,'message' =>'Tweet created successfully',
+                ];
+                 } else{
+                     $code = 500;
+                    $output = ['code' => $code,'message' =>'error while creating Tweet',];  
+                 }
+             } catch(Exception $e){
+              $code = 500;
+                 $output = ['code' => $code,'message' =>'error while creating Tweet',];
+             }
+             return response()->json($output, $code);
+         }  
+
+    
+ //2 .edit or update tweet //working
+    // public function editTweet(Request $request){
+    //     $tweet = Tweet::find($request->id);
+    //     if($tweet){
+    //         if($request['tweet'] == null){
+    //             return response()->json(['Message' => 'error'], 400);
+    //         }else{
+    //             $tweet->tweet = $request['tweet'];
+    //             $tweet->save();
+    //             return response()->json(['message' => 'tweet updated successfully'], 200);
+    //         }
+    //     }else{
+    //         return response()->json(['message' => 'undefined'], 404);
+    //     }
+    // }
+//2 with validation
+    public function editTweet(Request $request)
+    {
+        $this->validate($request, [
+        'tweet' => 'filled',
+        'userid' => 'required',
+        'id' => 'required'
+         ]);
         $tweet = Tweet::find($request->id);
-        if($tweet){
-            if($request['tweet'] == null){
-                return response()->json(['Message' => 'error'], 400);
-            }else{
-                $tweet->tweet = $request['tweet'];
-                $tweet->save();
-                return response()->json(['message' => 'tweet updated successfully'], 200);
-            }
-        }else{
-            return response()->json(['message' => 'undefined'], 404);
+        if($tweet->fill($request->all())->save()){
+           return response()->json(['status' => 'tweet updated successfully']);
         }
+        return response()->json(['status' => 'failed']);
     }
+
  
 //3 .working
     public function getTweet(Request $request){
@@ -97,20 +146,34 @@ class TweetController extends Controller{
     }
     
 // 7. working
+    // public function editComment(Request $request){
+    //    $comment = comment::find($request->tweet_id);
+    // // print_r($comment);
+    //     if($comment){
+    //         if($request['comment'] == null){
+    //             return response()->json(['Message' => 'error'], 400);
+    //         }else{
+    //             $comment->comment = $request['comment'];
+    //             $comment->save();
+    //             return response()->json(['message' => 'comment updated successfully'], 200);
+    //         }
+    //     }else{
+    //         return response()->json(['message' => 'undefined'], 404);
+    //     }
+    // }
+//7 working
     public function editComment(Request $request){
-       $comment = comment::find($request->tweet_id);
-    // print_r($comment);
-        if($comment){
-            if($request['comment'] == null){
-                return response()->json(['Message' => 'error'], 400);
-            }else{
-                $comment->comment = $request['comment'];
-                $comment->save();
-                return response()->json(['message' => 'comment updated successfully'], 200);
-            }
-        }else{
-            return response()->json(['message' => 'undefined'], 404);
+        $this->validate($request, [
+        'comment' => 'filled',
+        'tweet_id' => 'required',
+        'twitter_handler' => 'required',
+        'id' => 'required'
+         ]);
+        $tweet = comment::find($request->tweet_id);
+        if($tweet->fill($request->all())->save()){
+           return response()->json(['status' => 'comment updated successfully']);
         }
+        return response()->json(['status' => 'failed']);
     }
  // 8. working
     public function deleteComment(Request $request){
@@ -160,18 +223,16 @@ class TweetController extends Controller{
             return response()->json(['message' => ' Id Invalid'], 404);
         }
     }
-      public function getLikes(){
-        
-    }
+     
 // 11 .working
     public function retweet(Request $request){
         $retweet = Tweet::find($request->id);
         if ($retweet) {
            $retweet->total_retweets = $retweet['total_retweets'] + '1';
             if ($retweet->save()) {
-                return response()->json(['message' => 'retweet successfully'], 200);
             } else {
                 return response()->json(['message' => 'Erorr while retweet'], 400);
+                return response()->json(['message' => 'retweet successfully'], 200);
             }
         } else {
             return response()->json(['message' => ' Id Invalid'], 404);

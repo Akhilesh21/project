@@ -15,12 +15,12 @@ class UserController extends Controller{
             
      
      public function __construct(){
-           
-      $this->middleware('auth');
+ 
+      // $this->middleware('auth');
     
     }
      public function register(Request $request){
-    //     dd($request);
+  //   dd($request);
          //validation
          $this->validate($request, [
             'name' => 'required|string',
@@ -29,7 +29,7 @@ class UserController extends Controller{
             'tweeter_handle' => 'required|string',       
          ]);
         $input = $request->only('name','email','password','tweeter_handle'); 
-       //  dd($input);
+    //    dd($input);
          try{
              $user = new User;
              $user->name = $input['name'];
@@ -94,8 +94,11 @@ class UserController extends Controller{
   }
 
 
-  public function profile(){
-        return response()->json(['user' => Auth::user()], 200);
+  public function logout(){
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
+
         
 }

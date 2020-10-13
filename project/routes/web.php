@@ -22,6 +22,7 @@ $router->get("test","ApiController@test");
 //$router->post("register","UserController@register");
 $router->post('/register','UserController@register');
 $router->post('/login','UserController@login');
+$router->post('/logout', 'UserController@logout');
 $router->get('users', 'UserController@allUsers');
 
 $router->post('/updateDetails','UserController@updateDetails');
